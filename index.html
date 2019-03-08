@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/index.css" type="text/css" />
+        <!--Fontawesome-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <!--jQuery-->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <!--<input type="file" name="pic" accept="image/*">-->
+        <div class="main-body">
+            <div id="background-image"></div>
+            <canvas id="main-canvas" width="1000" height="1000"></canvas>
+            <div class="toggle-menu"><i class="fas fa-cog"></i></div>
+            <div class="main-menu">
+                <div class="form-block">
+                    <input type="text" class="image-url-input" id = "image-url-input" placeholder = "Image URL"/>
+                    <button class="pickUrl">Add Image</button>
+                    
+                    <label for="show-hide-image">Show Image</label>
+                    <input type="checkbox" name="showImage" id="show-hide-image" class="show-hide-image" checked>
+                    
+                    <label for="show-hide-dots">Show Dots</label>
+                    <input type="checkbox" name="showDots" id="show-hide-dots" class="show-hide-dots" checked>
+                    
+                    <label for="show-hide-lines">Show Lines</label>
+                    <input type="checkbox" name="showLines" id="show-hide-lines" class="show-hide-lines" checked>
+                    
+                    <h3>Set Mode</h3>
+                    <label for="create-mode">Create Mode</label>
+                    <input class="set-mode" type="radio" name="set-mode" id="create-mode" value="create" checked/>
+                    <label for="edit-mode">Edit Mode</label>
+                    <input class="set-mode" type="radio" name="set-mode" id="edit-mode" value="edit"/>
+                    <label for="delete-mode">Delete Mode</label>
+                    <input class="set-mode" type="radio" name="set-mode" id="delete-mode" value="delete"/>
+                    
+                    
+                    <h2>How To Use</h2>
+                    <p>
+                        click anywhere on the screen to add a point. Keep clicking to add more points.
+                        To add a star, indicating a break in the line, hold ctrl while clicking. To change the position of a point, click and drag the point.
+                        Use the sliders to turn off the image, lines, and/or dots.
+                    </p>
+                </div>
+                <div class="images"></div>
+            </div>
+            
+        </div>
+        <script type="text/javascript" src="js/canvas.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </body>
+</html>
