@@ -4,6 +4,8 @@
         <link rel="stylesheet" href="css/index.css" type="text/css" />
         <!--Fontawesome-->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <!-- Lato font -->
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700" rel="stylesheet">
         <!--jQuery-->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     </head>
@@ -18,36 +20,97 @@
                     <input type="text" class="image-url-input" id = "image-url-input" placeholder = "Image URL"/>
                     <button class="pickUrl">Add Image</button>
                     
-                    <label for="show-hide-image">Show Image</label>
-                    <input type="checkbox" name="showImage" id="show-hide-image" class="show-hide-image" checked>
+                    <div class = "section-container show-hide">
+                        <div>
+                            <input type="checkbox" name="showImage" id="show-hide-image" class="show-hide-image" checked>
+                            <label for="show-hide-image">Show Image</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="showDots" id="show-hide-dots" class="show-hide-dots" checked>
+                            <label for="show-hide-dots">Show Dots</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="showLines" id="show-hide-lines" class="show-hide-lines" checked>
+                            <label for="show-hide-lines">Show Lines</label>
+                        </div>
+                    </div>
+
+                    <a id="download" download="triangle.png">
+                        <button type="button" onClick="download()">Download Dot to Dot</button>
+                    </a>
+
+                    <h3>Your Images</h3>
+                    <div class="images"></div>
                     
-                    <label for="show-hide-dots">Show Dots</label>
-                    <input type="checkbox" name="showDots" id="show-hide-dots" class="show-hide-dots" checked>
-                    
-                    <label for="show-hide-lines">Show Lines</label>
-                    <input type="checkbox" name="showLines" id="show-hide-lines" class="show-hide-lines" checked>
-                    
+                    <div class="section-container set-mode-container">
                     <h3>Set Mode</h3>
-                    <label for="create-mode">Create Mode</label>
-                    <input class="set-mode" type="radio" name="set-mode" id="create-mode" value="create" checked/>
-                    <label for="edit-mode">Edit Mode</label>
-                    <input class="set-mode" type="radio" name="set-mode" id="edit-mode" value="edit"/>
-                    <label for="delete-mode">Delete Mode</label>
-                    <input class="set-mode" type="radio" name="set-mode" id="delete-mode" value="delete"/>
+                        <div>
+                            <input class="set-mode" type="radio" name="set-mode" id="create-mode" value="create" checked/>
+                            <label for="create-mode">Create Mode</label>
+                        </div>
+                        <div>
+                            <input class="set-mode" type="radio" name="set-mode" id="edit-mode" value="edit"/>
+                            <label for="edit-mode">Edit Mode <em>(CTRL)</em></label>
+                        </div>
+                        <div>
+                            <input class="set-mode" type="radio" name="set-mode" id="delete-mode" value="delete"/>
+                            <label for="delete-mode">Delete Mode <em>(X)</em></label>
+                        </div>
+                        <div>
+                            <input class="set-mode" type="radio" name="set-mode" id="draw-mode" value="draw"/>
+                            <label for="draw-mode">Draw Mode <em>(D)</em></label>
+                        </div>
+                        <div>
+                            <input class="set-mode" type="radio" name="set-mode" id="erase-mode" value="erase"/>
+                            <label for="erase-mode">Erase Drawing Mode <em>(SHIFT)</em></label>
+                        </div>
+                    </div>
                     
-                    
-                    <h2>How To Use</h2>
+                    <div class="section-container section-drawing">
+                        <div>
+                        <label>Select a drawing color</label>
+                        <input type="color" name="drawing color" id = "set-drawing-color" value="#ffffff">
+                        </div>
+                        <div>
+                        <label for="set-draw-size">Set Brush size</label>
+                        <input type="range" min="1" max="50" value="5" class="set-draw-size" id="set-draw-size">
+                        <div>
+                        </div>
+                        <label for="set-erase-size">Set Eraser size</label>
+                        <input type="range" min="1" max="100" value="10" class="set-eraser-size" id="set-eraser-size">
+                        </div>
+                        <button id = "reset-canvas">Reset Canvas</button>
+                    </div>
+
+                    <h3>How To Use</h3>
                     <p>
-                        click anywhere on the screen to add a point. Keep clicking to add more points.
-                        To add a star, indicating a break in the line, hold ctrl while clicking. To change the position of a point, click and drag the point.
-                        Use the sliders to turn off the image, lines, and/or dots.
+                        click anywhere on the screen to add a point.
+                    </p>
+                    <p>
+                        To add an image, click on one the sample images in Your Image, or use the 'image URL' input to add the URL of an image. Then click ADD IMAGE, or press enter. This will add the image to 'Your Images' Then select on to add it to the background.
+                    </p>
+                    <p>
+                        To edit a point, Set Mode to 'edit', and click and drag points click and drag the point. Alternatively, hold down CTRL while in any mode, then click and drag points.
+                    </p>
+                    <p>
+                        To delete a point, Set Mode to 'delete', or hold down X, then click anywhere, and the nearest point will be deleted.
+                    </p>
+                    <p>
+                        To Draw on the canvas, set mode to 'draw mode', or hold down D. Set the color you want to draw with, and click and drag to draw.
+                    </p>
+                    <p>
+                        To erase your drawing, Set Mode to 'Erase drawing mode', or hold down SHIFT. Then click and drag to eraase.
+                    </p>
+                    <p>
+                        To erase all drawing and points that have been added, click RESET CANVAS. Note that this will not reset the drawing color or the brush and eraser sizes.
+                    </p>
+                    <p>
+                        Click the Settings Gear in the top right, to show or hide settings menu.
                     </p>
                 </div>
-                <div class="images"></div>
             </div>
             
         </div>
-        <script type="text/javascript" src="js/canvas.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
     </body>
 </html>

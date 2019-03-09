@@ -2,6 +2,13 @@
 body {
     margin: 0;
     overflow: hidden;
+    color: #101010;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+}
+
+*  {
+    box-sizing: border-box;
 }
 #main-canvas {
     background: #ffffff00;
@@ -19,11 +26,12 @@ body {
     top:0;
     width:20%;
     height:100%;
-    background: #656e80c7;
+    background: #f7f7f7d1;
     border-left: 1px solid black;
     z-index:2;
     transition:all 1s;
     padding-top:50px;
+    overflow: scroll;
 }
 
 .images img {
@@ -63,4 +71,126 @@ body {
     right: 30px;
     z-index:5;
     transition: all 1s;
+}
+
+.image-url-input {
+    padding: 5px;
+    background: none;
+    border: 1px solid black;
+    width: 100%;
+    margin:5px 0;
+    border-radius: 2px;
+    border-radius: 2px;
+}
+
+.pickUrl {
+    width: 100%;
+    padding: 5px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid black;
+}
+
+.set-mode-container em {
+    float: right;
+}
+
+.section-container {
+    margin:10px 0;
+    text-transform: uppercase;
+    border-bottom: 1px solid black;
+}
+
+.section-container div {
+    width: 100%;
+    display: flex;
+    padding:8px 0;
+}
+
+.section-container label {
+    padding-left: 20px;
+    width: 100%;
+}
+
+.section-drawing div {
+    flex-direction: column;
+}
+
+.section-container input {
+    -webkit-appearance: none;
+    position: relative;
+    outline: none;
+    margin-top: 1px;
+}
+
+.section-container input[type="radio"]::before {
+    content:'';
+    width: 15px;
+    height: 15px;
+    display: block;
+    border: 2px solid black;
+    box-sizing: border-box;
+    position: absolute;
+    border-radius: 7px;
+}
+.section-container input[type="radio"]:checked::after {
+    content:'';
+    width: 7px;
+    height: 7px;
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+    top:4px;
+    left:4px;
+    background:black;
+}
+
+.section-container input[type="checkbox"]::before {
+    content:'';
+    width: 15px;
+    height: 15px;
+    display: block;
+    border: 1px solid black;
+    box-sizing: border-box;
+    position: absolute;
+    line-height: 13px;
+    font-size: 10px;
+}
+
+.section-container input[type="checkbox"]:checked::before {
+    content: '\f00c';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    padding-left: 1px;
+}
+
+.section-container input[type="range"] {
+    background: #ababab;
+    border-radius: 5px;
+    height: 10px;
+}
+
+.section-container input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; 
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+#set-drawing-color {
+    width: 100%;
+    height: 40px;
+}
+
+#reset-canvas {
+    border: 1px solid black;
+    color: white;
+    background: red;
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px;
+    text-transform: uppercase;
 }

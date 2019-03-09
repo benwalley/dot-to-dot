@@ -5,6 +5,7 @@ var data = {
     'font-size': '15px', 
     'font-family': 'Georgia',
     'background-color': 'grey',
+    sampleImages: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-V1sOwYVOrzIozeOECw2uKNaCnkaCkW9PK014vyEuQm8vAtHq4g"],
     menuOpen: true,
     pageHeight: undefined,
     pageWidth: undefined,
@@ -12,9 +13,12 @@ var data = {
     widthRatio: undefined,
     currentPos: 1,
     dotRadius: 2,
+    lineWidth: 1,
     pageMargin: 20,
     showLines: true,
     showDots: true,
+    dotColor: "#000000",
+    numberColor: "#000000",
     selectedMode: "create",
     shiftPressed: false,
     xPressed: false,
@@ -22,13 +26,20 @@ var data = {
     editingPoint: undefined,
     lastMousePosX: 0,
     lastMousePosY: 0,
-    mode: 'create'
+    mode: 'create',
+    drawRadius: 10,
+    drawColor: '#e1e1e1',
+    drawShape: 'circle',
+    showDrawing: true,
+    mousedown: false,
+    eraseRadius: 20
 };
 
 var currentImage;
 
 
 var points = [];
+var drawing = [];
 
 $(function() {
     init()
@@ -41,8 +52,41 @@ function setCanvasSize() {
     canvas.height = window.innerHeight;
 }
 
+function download() {
+    var download = document.getElementById("download");
+    var image = document.getElementById("main-canvas").toDataURL("image/png")
+    .replace("image/png", "image/octet-stream");
+    download.setAttribute("href", image);
+//download.setAttribute("download","archive.png");
+}
+
 function init() {
     setCanvasSize()
+    points = [];
+    drawing = [];
+    data.sampleImages = ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-V1sOwYVOrzIozeOECw2uKNaCnkaCkW9PK014vyEuQm8vAtHq4g"]
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    $("#set-draw-size").val(data.drawRadius * 2);
+    $("#set-erase-size").val(data.drawRadius * 2);
+    $("#set-drawing-color").val(data.drawColor);
+
+    // add sample images
+    for(var i = 0; i < data.sampleImages.length; i++) {
+        // I should change the function so that I can just pass the src in, but I don't feel like it right now.
+        var myImage = new Image();
+    
+        myImage.src = data.sampleImages[i];
+        // If import is successfull
+        myImage.onload = function() {
+            $(myImage).addClass("image-option")
+            // add click listener
+            $(myImage).click(function() {
+                imageOptionHandler(this)
+            })
+            $(".images").append(myImage)
+        }
+    }
 }
 
 $( window ).resize(function() {
@@ -57,11 +101,16 @@ function drawRect(data) {
     }
 }
 
-function drawCircle(data) {
+function drawCircle(info) {
     ctx.beginPath();
-    ctx.arc(data.x, data.y, data.r, 0, Math.PI * 2, true)
+    ctx.arc(info.x, info.y, info.r, 0, Math.PI * 2, true)
+    if(info.color) {
+        ctx.fillStyle = info.color
+    } else {
+        ctx.fillStyle = data.dotColor;
+    }
+    
     ctx.fill()
-    ctx.stroke()
 }
 
 function write(data) {
@@ -156,14 +205,40 @@ $(".set-mode").change(function() {
     } else if ( value == "delete") {
         data.mode = "delete";
         data.selectedMode = "delete"
+    } else if (value == "draw") {
+        data.mode = "draw"
+        data.selectedMode = "draw";
+    } else if (value == "erase") {
+        data.mode = "erase";
+        data.selectedMode = "erase";
     }
 })
+
+$("#set-drawing-color").change(function() {
+    data.drawColor = $(this).val();
+}) 
 
 $(".toggle-menu").click(function() {
     toggleMenu()
 })
 
+$("#set-draw-size").change(function() {
+    var value = $(this).val()
+    data.drawRadius = value/2
+})
 
+$("#set-eraser-size").change(function() {
+    var value = $(this).val()
+    data.eraseRadius = value/2
+})
+
+$("#reset-canvas").click(function() {
+    init()
+})
+
+function addDrawing() {
+    drawing.push({x: data.mouseX, y: data.mouseY, r: data.drawRadius, color: data.drawColor, shape: draw.drawShape, type: 1})
+}
 
 // replace current image with another image
 function changeImage() {
@@ -178,6 +253,10 @@ function addPoint(x,y) {
     points.push({x: x, y: y, number: data.currentPos})
     data.currentPos += 1;
     draw()
+}
+
+function addErase() {
+    drawing.push({x: data.mouseX, y: data.mouseY, r: data.eraseRadius, type: 0})
 }
 
 function closestPoint(x, y) {
@@ -221,32 +300,44 @@ document.addEventListener('keydown', function (e) {
         data.mode = "edit"
     }
     
-    else if (e.keyCode == 88 || data.mode == "delete") {
+    else if (e.keyCode == 88) {
         data.mode = "delete"
+    }
+
+    else if (e.keyCode == 68) {
+        // C pressed. draw mode
+        data.mode = "draw";
+    }
+
+    else if (e.keyCode == 16) {
+        // Shift pressed. Erase mode
+        data.mode = "erase";
     }
 });
 
 document.addEventListener('keyup', function (e) {
-    // if controll is pressed
-    if (e.keyCode == 17) {
-        // data.ctrlPressed = false
-        // reset mode
-        data.mode = data.selectedMode;
-    }
-    
-    else if (e.keyCode == 88) {
-        // reset mode
-        data.mode = data.selectedMode;
-    }
+    data.mode = data.selectedMode;
 });
 
 document.addEventListener("mousemove", function(e) {
     data.mouseX = e.clientX;
     data.mouseY = e.clientY;
+    if(data.mode == "draw" && data.mousedown) {
+        addDrawing();
+        draw()
+    } else if (data.mode == "erase") {
+        if(data.mousedown) {
+            addErase();
+        }
+        draw()
+    }
+
+
 })
 
 
 $("#main-canvas").mousedown(function(e) {
+    data.mousedown = true;
     if(data.mode == "edit") {
         data.editingPoint = closestPoint(data.mouseX, data.mouseY)
         data.lastMousePosX = data.mouseX;
@@ -255,8 +346,9 @@ $("#main-canvas").mousedown(function(e) {
         data.animating = true;
         animate()
         
-    } else if (data.shiftPressed) {
-        console.log("shif pressed")
+    } else if (data.mode == "draw") {
+        addDrawing()
+        draw()
     } else if (data.mode=="edit") {
         data.editingPoint = closestPoint(data.mouseX, data.mouseY)
         data.lastMousePosX = data.mouseX;
@@ -268,12 +360,13 @@ $("#main-canvas").mousedown(function(e) {
         var point = closestPoint(data.mouseX, data.mouseY);
         points.splice(point, 1)
         draw()
-    }else {
+    }else if ( data.mode == "create") {
         addPoint(data.mouseX, data.mouseY)
     }
 })
 
 $("#main-canvas").mouseup(function(e) {
+    data.mousedown = false
     if(data.mode == "edit") {
         data.animating = false
     }
@@ -281,13 +374,6 @@ $("#main-canvas").mouseup(function(e) {
 })
 
 // ==========================================================
-
-function drawImage() {
-    if(currentImage) {
-        ctx.drawImage(currentImage, data.pageMargin, data.pageMargin, currentImage.width * data.heightRatio, currentImage.height * data.heightRatio);
-    }
-    
-}
 
 function drawDots() {
     for(var i = 0; i < points.length; i++) {
@@ -299,7 +385,9 @@ function drawDots() {
 function drawLines() {
     if(points.length > 0) {
         ctx.beginPath();
+        ctx.strokeStyle = data.dotColor;
         ctx.moveTo(points[0].x, points[0].y)
+        ctx.lineWidth = data.lineWidth;
         for(var i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y)
         }
@@ -307,31 +395,29 @@ function drawLines() {
     }
 }
 
-// function drawOutline() {
-    
-//     var width = currentImage.width;
-//     var height = currentImage.height;
-    
-//     data.heightRatio = (window.innerHeight - (data.pageMargin * 2 )) / height;
-//     data.widthRatio = (window.innerWidth - (data.pageMargin * 2 )) / width;
-//     // check if width or height should be the defining size
-//     if(height * data.widthRatio > window.innerHeight) {
-//         // use height ratio
-//         drawRect({x:data.pageMargin, y: data.pageMargin, width: width * data.heightRatio, height: height * data.heightRatio })
-//     } else {
-//         // Use width ratio
-//         drawRect({x:data.pageMargin, y: data.pageMargin, width: width * data.widthRatio, height: height * data.widthRatio })
-//     }
-// }
-
+function drawDrawing() {
+    for (var i = 0; i < drawing.length; i++) {
+        if(drawing[i].type == 1) {
+            drawCircle({x: drawing[i].x, y: drawing[i].y, r: drawing[i].r, color: drawing[i].color})
+        } else if (drawing[i].type == 0) {
+            ctx.clearRect(drawing[i].x - drawing[i].r, drawing[i].y - drawing[i].r, drawing[i].r * 2, drawing[i].r * 2);
+        }
+    }
+}
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(data.showDrawing) {
+        drawDrawing()
+    }
     if(data.showDots) {
         drawDots()
     }
     if(data.showLines) {
        drawLines(); 
+    }
+    if(data.mode == "erase") {
+        drawRect({x:data.mouseX - data.eraseRadius, y:data.mouseY - data.eraseRadius, width:data.eraseRadius * 2, height:data.eraseRadius * 2})
     }
     
 }
