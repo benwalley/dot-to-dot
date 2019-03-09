@@ -64,6 +64,7 @@ function init() {
     setCanvasSize()
     points = [];
     drawing = [];
+    $(".images").html("")
     data.sampleImages = ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-V1sOwYVOrzIozeOECw2uKNaCnkaCkW9PK014vyEuQm8vAtHq4g"]
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
